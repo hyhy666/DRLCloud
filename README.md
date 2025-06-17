@@ -120,6 +120,13 @@ cd cloud-resource-allocation
 pip install -r requirements.txt
 ```
 - 启动fastapi服务器：
-- bash run.sh
+```
+bash run.sh
+```
+### API接口说明
 
+| 接口路径 | 请求方式 | 功能描述 | 请求参数 | 返回数据 |
+|------|------|----------|----------|----------|
+| /allocate | 	POST | 任务资源分配 | JSON格式，包含任务需求和状态 | JSON格式，分配资源信息 |
+| /status | GET | 查询当前资源状态 | 无 | 适应性差 | JSON格式，当前资源使用情况 |
 
