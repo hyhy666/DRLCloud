@@ -35,12 +35,4 @@
 - 奖励 $r$：资源利用率越高，延迟越低，奖励越大
 
 ### 算法流程图
-
-```mermaid
-flowchart TD
-    A[初始化环境与DQN网络] --> B[获取当前状态 s]
-    B --> C[选择动作 a]
-    C --> D[执行动作，得到新状态 s' 和奖励 r]
-    D --> E[存储经验 (s,a,r,s-prime)]
-    E --> F[使用经验训练 DQN]
-    F --> B
+<pre><code> ## 算法流程图 ```mermaid flowchart TD A[初始化环境与 DQN 网络] --> B[获取当前状态 s] B --> C[选择动作 a] C --> D[执行动作，得到新状态 s′ 和奖励 r] D --> E[存储经验 s, a, r, s′] E --> F[使用经验训练 DQN] F --> B ``` </code></pre>
