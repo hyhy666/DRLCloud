@@ -1,6 +1,6 @@
 # DRLCloud# DRLCloud：基于深度强化学习的云计算资源分配平台
 
-## 1️⃣ 项目背景与意义
+## 1️ 项目背景与意义
 
 ### 为什么做这个项目？
 
@@ -14,7 +14,7 @@
 
 ---
 
-## 2️⃣ 相关方法与本项目分类
+## 2️ 相关方法与本项目分类
 
 | 方法 | 特点 | 存在问题 |
 |------|------|----------|
@@ -26,7 +26,7 @@
 
 ---
 
-## 3️⃣ 方法设计
+## 3️ 方法设计
 
 ### 方法原理
 
@@ -43,9 +43,77 @@ flowchart TD
     D --> E[存储经验 s, a, r, s′]
     E --> F[使用经验训练 DQN]
     F --> B
+```
 
 ### 关键公式
 Q(s_t, a_t) <- Q(s_t, a_t) + α * ( r_t + γ * max_{a'} Q(s_{t+1}, a') - Q(s_t, a_t) )
 其中：α 是学习率，γ 是折扣因子，r_t 是即时奖励
 
 ### 方法原理
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import random
+import numpy as np
+
+class DQN(nn.Module):
+    def __init__(self, state_dim, action_dim):
+        super(DQN, self).__init__()
+        self.fc1 = nn.Linear(state_dim, 128)
+        self.fc2 = nn.Linear(128, 128)
+        self.fc3 = nn.Linear(128, action_dim)
+
+    def forward(self, x):
+        x = torch.relu(self.fc1(x))
+        x = torch.relu(self.fc2(x))
+        return self.fc3(x)
+
+class ReplayBuffer:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.buffer = []
+        self.position = 0
+
+    def push(self, state, action, reward, next_state, done):
+        if len(self.buffer) < self.capacity:
+            self.buffer.append(None)
+        self.buffer[self.position] = (state, action, reward, next_state, done)
+        self.position = (self.position + 1) % self.capacity
+
+    def sample(self, batch_size):
+        return random.sample(self.buffer, batch_size)
+
+    def __len__(self):
+        return len(self.buffer)
+
+def train(dqn, target_dqn, optimizer, replay_buffer, batch_size, gamma):
+    if len(replay_buffer) < batch_size:
+        return
+    transitions = replay_buffer.sample(batch_size)
+    batch = list(zip(*transitions))
+    states = torch.tensor(np.array(batch[0]), dtype=torch.float32)
+    actions = torch.tensor(batch[1])
+    rewards = torch.tensor(batch[2])
+    next_states = torch.tensor(np.array(batch[3]), dtype=torch.float32)
+    dones = torch.tensor(batch[4], dtype=torch.float32)
+
+    q_values = dqn(states).gather(1, actions.unsqueeze(1)).squeeze(1)
+    next_q_values = target_dqn(next_states).max(1)[0]
+    expected_q_values = rewards + gamma * next_q_values * (1 - dones)
+
+    loss = nn.MSELoss()(q_values, expected_q_values.detach())
+
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+## 4 软件使用说明
+
+### 快速启动
+克隆项目代码：git clone https://github.com/你的用户名/cloud-resource-allocation.git
+cd cloud-resource-allocation
+pip install -r requirements.txt
+
+启动fastapi服务器：bash run.sh
+
+
