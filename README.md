@@ -52,7 +52,7 @@ $$
 - 其中：α 是学习率，γ 是折扣因子，r_t 是即时奖励
 
 ### 关键代码示例
-```
+``` python
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -114,13 +114,13 @@ def train(dqn, target_dqn, optimizer, replay_buffer, batch_size, gamma):
 
 ### 快速启动
 - 克隆项目代码：
-```
+``` bash
 git clone https://github.com/你的用户名/cloud-resource-allocation.git
 cd cloud-resource-allocation
 pip install -r requirements.txt
 ```
 - 启动fastapi服务器：
-```
+``` bash
 bash run.sh
 ```
 ### API接口说明
@@ -131,14 +131,14 @@ bash run.sh
 | /status | GET | 查询当前资源状态 | 无 | 适应性差 | JSON格式，当前资源使用情况 |
 
 ### API示例
--请求
+- 请求 bash
 ```
 curl -X POST "http://localhost:8000/allocate" -H "Content-Type: application/json" -d '{
   "task_info": {"cpu": 4, "mem": 8},
   "state": {"cpu_available": 20, "mem_available": 64}
 }'
-```
--响应
+``` json
+- 响应
 ```
 {
   "allocation": {
@@ -149,3 +149,5 @@ curl -X POST "http://localhost:8000/allocate" -H "Content-Type: application/json
 
 ```
 
+## 5 数据集说明
+- 本项目使用自定义模拟数据集，模拟任务负载和资源状态，目录结构如下：
