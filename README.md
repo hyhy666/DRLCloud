@@ -51,7 +51,7 @@ Q(s_t, a_t) <- Q(s_t, a_t) + α * ( r_t + γ * max_{a'} Q(s_{t+1}, a') - Q(s_t, 
 $$
 - 其中：α 是学习率，γ 是折扣因子，r_t 是即时奖励
 
-### 方法原理
+### 关键代码示例
 ```
 import torch
 import torch.nn as nn
@@ -113,10 +113,13 @@ def train(dqn, target_dqn, optimizer, replay_buffer, batch_size, gamma):
 ## 4 软件使用说明
 
 ### 快速启动
-克隆项目代码：git clone https://github.com/你的用户名/cloud-resource-allocation.git
+- 克隆项目代码：
+```
+git clone https://github.com/你的用户名/cloud-resource-allocation.git
 cd cloud-resource-allocation
 pip install -r requirements.txt
-
-启动fastapi服务器：bash run.sh
+```
+- 启动fastapi服务器：
+- bash run.sh
 
 
