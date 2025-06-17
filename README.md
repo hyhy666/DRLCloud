@@ -137,17 +137,97 @@ curl -X POST "http://localhost:8000/allocate" -H "Content-Type: application/json
   "task_info": {"cpu": 4, "mem": 8},
   "state": {"cpu_available": 20, "mem_available": 64}
 }'
-``` json
+``` 
 - 响应
-```
+``` json
 {
   "allocation": {
     "cpu": 4,
     "mem": 8
   }
 }
-
 ```
-
 ## 5 数据集说明
 - 本项目使用自定义模拟数据集，模拟任务负载和资源状态，目录结构如下：
+``` pgsql
+data/
+├── tasks.json
+├── system_state.json
+```
+- 示例数据片段:
+``` json
+{
+  "tasks": [
+    {"id": 1, "cpu": 2, "mem": 4},
+    {"id": 2, "cpu": 1, "mem": 2}
+  ]
+}
+```
+
+## 6 代码结构与核心文件说明
+``` json
+cloud-resource-allocation/
+├── app/
+│   ├── main.py            # FastAPI主程序，定义API接口
+│   ├── dqn.py             # DQN模型与训练代码
+│   ├── environment.py     # 云计算资源环境模拟
+│   └── api.py             # 业务逻辑封装
+├── data/                  # 模拟数据集
+├── tests/                 # API调用测试代码
+├── requirements.txt       # 依赖包
+├── run.sh                 # 启动脚本（Linux）
+├── README.md              # 项目文档（本文件）
+```
+
+## 7 核心代码示例
+- **FastApi接口部分**（app/main.py）
+``` python
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class TaskInfo(BaseModel):
+    cpu: int
+    mem: int
+
+class AllocationRequest(BaseModel):
+    task_info: TaskInfo
+    state: dict
+
+@app.post("/allocate")
+def allocate_resource(req: AllocationRequest):
+    # 这里应调用DQN推理模块，示例直接返回请求资源
+    allocation = {
+        "cpu": req.task_info.cpu,
+        "mem": req.task_info.mem
+    }
+    return {"allocation": allocation}
+
+@app.get("/status")
+def get_status():
+    return {"resource_status": {"cpu_used": 10, "mem_used": 20}}
+```
+- **启动脚本（run.sh）**
+``` bash
+#!/bin/bash
+uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
+
+## 8 API测试示例（tests/test_api.py）
+``` python
+import requests
+
+def test_allocate():
+    url = "http://localhost:8000/allocate"
+    data = {
+        "task_info": {"cpu": 2, "mem": 4},
+        "state": {"cpu_available": 10, "mem_available": 32}
+    }
+    response = requests.post(url, json=data)
+    assert response.status_code == 200
+    print("响应内容:", response.json())
+
+if __name__ == "__main__":
+    test_allocate()
+```
