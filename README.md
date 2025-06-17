@@ -43,3 +43,7 @@ flowchart TD
     D --> E[存储经验 s, a, r, s′]
     E --> F[使用经验训练 DQN]
     F --> B
+
+### 关键公式
+Q(s_t, a_t) <- Q(s_t, a_t) + α * ( r_t + γ * max_{a'} Q(s_{t+1}, a') - Q(s_t, a_t) )
+其中：α 是学习率，γ 是折扣因子，r_t 是即时奖励
