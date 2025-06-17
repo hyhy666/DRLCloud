@@ -130,3 +130,22 @@ bash run.sh
 | /allocate | 	POST | 任务资源分配 | JSON格式，包含任务需求和状态 | JSON格式，分配资源信息 |
 | /status | GET | 查询当前资源状态 | 无 | 适应性差 | JSON格式，当前资源使用情况 |
 
+### API示例
+-请求
+```
+curl -X POST "http://localhost:8000/allocate" -H "Content-Type: application/json" -d '{
+  "task_info": {"cpu": 4, "mem": 8},
+  "state": {"cpu_available": 20, "mem_available": 64}
+}'
+```
+-响应
+```
+{
+  "allocation": {
+    "cpu": 4,
+    "mem": 8
+  }
+}
+
+```
+
