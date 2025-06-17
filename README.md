@@ -46,10 +46,13 @@ flowchart TD
 ```
 
 ### 关键公式
+$$
 Q(s_t, a_t) <- Q(s_t, a_t) + α * ( r_t + γ * max_{a'} Q(s_{t+1}, a') - Q(s_t, a_t) )
-其中：α 是学习率，γ 是折扣因子，r_t 是即时奖励
+$$
+- 其中：α 是学习率，γ 是折扣因子，r_t 是即时奖励
 
 ### 方法原理
+```
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -106,7 +109,7 @@ def train(dqn, target_dqn, optimizer, replay_buffer, batch_size, gamma):
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-
+```
 ## 4 软件使用说明
 
 ### 快速启动
